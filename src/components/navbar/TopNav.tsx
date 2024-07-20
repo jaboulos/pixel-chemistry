@@ -1,13 +1,14 @@
 import {
   Button,
-  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
 } from '@nextui-org/react'
+import Link from 'next/link'
 import React from 'react'
 import { GiMatchTip } from 'react-icons/gi'
+import NavLink from './NavLink'
 
 export const TopNav = () => {
   return (
@@ -15,7 +16,12 @@ export const TopNav = () => {
       maxWidth="xl"
       className="bg-gradient-to-r from-purple-900 to-blue-400"
       classNames={{
-        item: ['text-xl', 'text-white', 'uppercase'],
+        item: [
+          'text-xl',
+          'text-white',
+          'uppercase',
+          'data-[active=true]:text-green-200',
+        ],
       }}
     >
       <NavbarBrand as={Link} href="/">
@@ -26,21 +32,25 @@ export const TopNav = () => {
         </div>
       </NavbarBrand>
       <NavbarContent justify="center">
-        <NavbarItem as={Link} href="/members">
-          members
-        </NavbarItem>
-        <NavbarItem as={Link} href="/lists">
-          lists
-        </NavbarItem>
-        <NavbarItem as={Link} href="/messages">
-          messages
-        </NavbarItem>
+        <NavLink label="Members" href="/members" />
+        <NavLink label="Lists" href="/lists" />
+        <NavLink label="Messages" href="/messages" />
       </NavbarContent>
       <NavbarContent justify="end">
-        <Button variant="bordered" className="text-white">
+        <Button
+          variant="bordered"
+          as={Link}
+          href="/login"
+          className="text-white"
+        >
           Login
         </Button>
-        <Button variant="bordered" className="text-white">
+        <Button
+          variant="bordered"
+          as={Link}
+          href="/register"
+          className="text-white"
+        >
           Register
         </Button>
       </NavbarContent>
