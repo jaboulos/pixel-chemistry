@@ -3,6 +3,8 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react'
 import { GiPadlock } from 'react-icons/gi'
+import { loginSchema, LoginSchema } from '@/lib/schemas/loginSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export const LoginForm = () => {
   // hook from react-hook-form
@@ -10,9 +12,12 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm()
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onTouched',
+  })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: LoginSchema) => {
     console.log('data', data)
   }
 
@@ -33,7 +38,7 @@ export const LoginForm = () => {
             <div className="space-y-4">
               <Input
                 // {...register('email', { required: true })} // this syntax for no error message and only highlight
-                {...register('email', { required: 'Email is required' })}
+                {...register('email')}
                 defaultValue=""
                 label="Email"
                 variant="bordered"
@@ -42,7 +47,7 @@ export const LoginForm = () => {
               />
               <Input
                 // {...register('password', { required: true })} // this syntax for no error message and only highlight
-                {...register('password', { required: 'Password is required' })}
+                {...register('password')}
                 defaultValue=""
                 label="Password"
                 type="password"
@@ -53,7 +58,7 @@ export const LoginForm = () => {
               <Button
                 fullWidth
                 isDisabled={!isValid}
-                color="secondary"
+                color="primary"
                 type="submit"
               >
                 Login
