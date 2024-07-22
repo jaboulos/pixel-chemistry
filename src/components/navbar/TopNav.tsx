@@ -14,7 +14,7 @@ export const TopNav = () => {
   return (
     <Navbar
       maxWidth="xl"
-      className="bg-gradient-to-r from-purple-900 to-blue-400"
+      className="bg-gradient-to-r from-teal-400 to-sky-500"
       classNames={{
         item: [
           'text-xl',

@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TopNav />
         <Providers>
-          <main className="container mx-auto p-10">{children}</main>
+          <TopNav />
+          <main className="container mx-auto">{children}</main>
         </Providers>
       </body>
     </html>
