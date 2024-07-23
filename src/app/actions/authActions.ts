@@ -38,11 +38,11 @@ export const registerUser = async (
       where: { email: email },
     })
 
-    // if user already exists throw server side error
+    // if user (email) already exists throw server side error
     if (existingUser) {
       return {
         status: 'error',
-        error: 'User already exists',
+        error: 'Email already exists',
       }
     }
 
