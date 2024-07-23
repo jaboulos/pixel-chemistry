@@ -3,8 +3,9 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react'
 import { GiPadlock } from 'react-icons/gi'
-import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
+import { registerUser } from '@/app/actions/authActions'
 
 export const RegisterForm = () => {
   // hook from react-hook-form
@@ -13,12 +14,17 @@ export const RegisterForm = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
+    /*client side validation.  The resolver connects form validation schema (defined with Zod) to the react-hook-form library. This allows react-hook-form to leverage the Zod schema to validate form data.
+
+    The zodResolver(registerSchema) function is a utility that wraps my Zod schema in a format that react-hook-form can understand. This integration streamlines the validation process, allowing me to define my validation rules using Zod and have react-hook-form handle the form submission and validation seamlessly.
+    */
+    // resolver: zodResolver(registerSchema),
     mode: 'onTouched',
   })
 
-  const onSubmit = (data: RegisterSchema) => {
-    console.log('data', data)
+  const onSubmit = async (data: RegisterSchema) => {
+    const result = await registerUser(data)
+    console.log('result', result)
   }
 
   return (
