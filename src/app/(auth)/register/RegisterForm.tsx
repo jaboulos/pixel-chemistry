@@ -3,22 +3,49 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react'
 import { GiPadlock } from 'react-icons/gi'
-import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
+import { registerUser } from '@/app/actions/authActions'
 
 export const RegisterForm = () => {
   // hook from react-hook-form
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    setError,
+    reset,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<RegisterSchema>({
+    /*client side validation.  The resolver connects form validation schema (defined with Zod) to the react-hook-form library. This allows react-hook-form to leverage the Zod schema to validate form data.
+
+    The zodResolver(registerSchema) function is a utility that wraps my Zod schema in a format that react-hook-form can understand. This integration streamlines the validation process, allowing me to define my validation rules using Zod and have react-hook-form handle the form submission and validation seamlessly.
+    */
     resolver: zodResolver(registerSchema),
     mode: 'onTouched',
   })
 
-  const onSubmit = (data: RegisterSchema) => {
-    console.log('data', data)
+  const onSubmit = async (data: RegisterSchema) => {
+    const result = await registerUser(data)
+
+    if (result.status === 'success') {
+      console.log('User registered successfully')
+    } else {
+      // check if error is array of errors (Zod error array)
+      if (Array.isArray(result.error)) {
+        result.error.forEach((e, i) => {
+          // get field name (if its name, email or pw from the form)
+          const fieldName = e.path.join('.') as 'email' | 'name' | 'password'
+          setError(fieldName, { message: e.message })
+        })
+      } else {
+        // for server errors, can be stored here
+        setError('root.serverError', { message: result.error })
+      }
+    }
+  }
+
+  const handleClear = () => {
+    reset()
   }
 
   return (
@@ -63,14 +90,33 @@ export const RegisterForm = () => {
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
               />
-              <Button
-                fullWidth
-                isDisabled={!isValid}
-                color="primary"
-                type="submit"
-              >
-                Register
-              </Button>
+              {/* NOTE: server error message, useful for scenarios like if that email has already been registered */}
+              {errors?.root?.serverError && (
+                <p className="text-danger text-sm">
+                  {errors.root.serverError.message}
+                </p>
+              )}
+              <div className="space-y-4">
+                <Button
+                  fullWidth
+                  // using onSubmit and handleSubmit from react-hook-form, when submitting, the form automatically goes into a submitting mode. You can then use the isSubmitting prop from formState to have set a loading indicator on the button from nextUI
+                  isLoading={isSubmitting}
+                  isDisabled={!isValid}
+                  color="primary"
+                  type="submit"
+                >
+                  Register
+                </Button>
+                <Button
+                  fullWidth
+                  color="default"
+                  variant="ghost"
+                  onClick={handleClear}
+                  type="button"
+                >
+                  Reset
+                </Button>
+              </div>
             </div>
           </form>
         </CardBody>
