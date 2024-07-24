@@ -4,7 +4,7 @@
 'use server'
 
 import bcrypt from 'bcryptjs'
-import { signIn } from '@/auth'
+import { signIn, signOut } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
 import { User } from '@prisma/client'
@@ -40,6 +40,10 @@ export const signInUser = async (
       return { status: 'error', error: 'Something else went wrong' }
     }
   }
+}
+
+export const signOutUser = async () => {
+  await signOut({ redirectTo: '/' })
 }
 
 // take in form fields from forms, validation and process for registering user
