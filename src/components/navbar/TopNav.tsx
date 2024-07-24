@@ -3,8 +3,14 @@ import Link from 'next/link'
 import React from 'react'
 import { GiMatchTip } from 'react-icons/gi'
 import NavLink from './NavLink'
+import { auth } from '@/auth'
+import UserMenu from './UserMenu'
 
-export const TopNav = () => {
+export const TopNav = async () => {
+  // extract session from promise
+  // will be used to determine whether or not to show user menu or buttons
+  const session = await auth()
+
   return (
     <Navbar
       maxWidth="xl"
@@ -31,22 +37,28 @@ export const TopNav = () => {
         <NavLink label="Messages" href="/messages" />
       </NavbarContent>
       <NavbarContent justify="end">
-        <Button
-          variant="bordered"
-          as={Link}
-          href="/login"
-          className="text-white"
-        >
-          Login
-        </Button>
-        <Button
-          variant="bordered"
-          as={Link}
-          href="/register"
-          className="text-white"
-        >
-          Register
-        </Button>
+        {session?.user ? (
+          <UserMenu user={session.user} />
+        ) : (
+          <>
+            <Button
+              variant="bordered"
+              as={Link}
+              href="/login"
+              className="text-white"
+            >
+              Login
+            </Button>
+            <Button
+              variant="bordered"
+              as={Link}
+              href="/register"
+              className="text-white"
+            >
+              Register
+            </Button>
+          </>
+        )}
       </NavbarContent>
     </Navbar>
   )
