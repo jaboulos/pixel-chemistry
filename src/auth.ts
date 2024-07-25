@@ -1,10 +1,10 @@
+/*
+The purpose of this auth.ts file is to configure and set up authentication using NextAuth.js with Prisma as the database adapter. It defines the authentication handlers and integrates with Prisma for user session management.
+*/
 import NextAuth from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-// import { PrismaClient } from '@prisma/client'
 import authConfig from './auth.config'
 import { prisma } from './lib/prisma'
-
-// const prisma = new PrismaClient()
 
 export const {
   auth,
