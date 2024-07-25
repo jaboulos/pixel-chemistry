@@ -45,7 +45,7 @@ model User {
   accounts      Account[] // One-to-many relation with Account model
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  Member        Member? // Optional one-to-one relation with Member model
+  member        Member? // Optional one-to-one relation with Member model
 }
 
 model Member {
@@ -57,6 +57,7 @@ model Member {
   created     DateTime @default(now())
   updated     DateTime @default(now())
   description String
+  city        String
   country     String
   image       String?
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
