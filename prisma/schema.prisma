@@ -14,37 +14,65 @@ datasource db {
 }
 
 model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  id                String  @id @default(cuid()) // Unique identifier for the account, using cuid for default value
+  userId            String // Foreign key referencing User
+  type              String // Account type (e.g., OAuth, credentials)
+  provider          String // Name of the authentication provider (e.g., Google, Facebook)
+  providerAccountId String // Provider's unique identifier for the account
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User model
 
-  @@id([provider, providerAccountId])
+  @@unique([provider, providerAccountId]) // Composite unique constraint on provider and providerAccountId
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(cuid()) // Unique identifier for the user, using cuid for default value
   name          String?
   email         String    @unique
   emailVerified DateTime?
   passwordHash  String
   image         String?
-  accounts      Account[]
-  // Optional for WebAuthn supports
-  // Authenticator Authenticator[]
+  accounts      Account[] // One-to-many relation with Account model
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  member        Member? // Optional one-to-one relation with Member model
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Member {
+  id          String   @id @default(cuid()) // Unique identifier for the member, using cuid for default value
+  userId      String   @unique // Unique foreign key referencing User
+  name        String
+  gender      String
+  dateOfBirth DateTime
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
+  description String
+  city        String
+  country     String
+  image       String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 1 to many relationship, 1 member can have many photos
+  photos      Photo[] // One-to-many relation with Photo model
+}
+
+model Photo {
+  id       String  @id @default(cuid()) // Unique identifier for the photo, using cuid for default value
+  url      String
+  publicId String? // Optional public ID for photo (e.g., from cloud storage)
+
+  memberId String // Foreign key referencing Member
+
+  // references id of Member table
+  // onDelete cascade, if User is deleted, it will also delete the  Member, which will then delete related Photos of that member
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
