@@ -1,3 +1,6 @@
+/*
+The purpose of this prisma.ts file is to create and manage a singleton instance of the Prisma client, ensuring that only one instance is used throughout the application, even during hot module reloading in development. This avoids multiple database connections and improves efficiency.
+*/
 import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
