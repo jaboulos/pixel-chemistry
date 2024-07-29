@@ -1,3 +1,4 @@
+'use client'
 import { calculateAge } from '@/lib/util'
 import {
   Button,
@@ -49,8 +50,8 @@ export const MemberSidebar = ({ member }: MemberSidebarProps) => {
               href={link.href}
               className={`block rounded ${
                 pathname === link.href
-                  ? 'text-secondary-50'
-                  : 'hover:text-secondary/50'
+                  ? 'text-cyan-600/80'
+                  : 'hover:text-primary'
               }`}
             >
               {link.name}
@@ -63,8 +64,8 @@ export const MemberSidebar = ({ member }: MemberSidebarProps) => {
           as={Link}
           href="/members"
           fullWidth
-          color="secondary"
-          variant="bordered"
+          color="default"
+          variant="ghost"
         >
           Go Back
         </Button>
