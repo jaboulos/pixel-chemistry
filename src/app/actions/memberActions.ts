@@ -22,3 +22,14 @@ export const getMembers = async () => {
     console.log(error)
   }
 }
+
+// query db and get record from member table that matches userId
+export const getMemberByUserId = (userId: string) => {
+  try {
+    return prisma.member.findUnique({
+      where: { userId },
+    })
+  } catch (error) {
+    console.log('error: ', error)
+  }
+}
