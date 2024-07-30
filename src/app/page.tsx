@@ -33,16 +33,6 @@ export const Home = async () => {
       ) : (
         <div>not signed in</div>
       )}
-
-      <Button
-        as={Link}
-        href="/members"
-        color="primary"
-        variant="bordered"
-        startContent={<FaRegSmile size={20} />}
-      >
-        Members page
-      </Button>
     </div>
   )
 }

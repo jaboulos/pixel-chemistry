@@ -40,7 +40,7 @@ export const MemberSidebar = ({ member }: MemberSidebarProps) => {
           {member.name}, {calculateAge(member.dateOfBirth)}
         </div>
         <div className="text-sm text-neutral-500">
-          {member.city} {member.country}
+          {member.city}, {member.country}
         </div>
         <Divider className="my-3" />
         <nav className="flex flex-col p-4 ml-4 text-2xl gap-4">
