@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { Photo } from '@prisma/client'
 
 // querying local db to get data
 export const getMembers = async () => {
@@ -32,4 +33,15 @@ export const getMemberByUserId = (userId: string) => {
   } catch (error) {
     console.log('error: ', error)
   }
+}
+
+export const getMemberPhotosByUserId = async (userId: string) => {
+  const member = await prisma.member.findUnique({
+    where: { userId },
+    select: { photos: true },
+  })
+
+  if (!member) return null
+
+  return member.photos
 }
