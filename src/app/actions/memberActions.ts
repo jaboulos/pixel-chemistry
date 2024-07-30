@@ -7,7 +7,6 @@ import { Photo } from '@prisma/client'
 // querying local db to get data
 export const getMembers = async () => {
   // use this anywhere to get session data
-  throw new Error('testing...')
   const session = await auth()
 
   if (!session?.user) return null
