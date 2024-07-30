@@ -3,6 +3,7 @@ import { Member } from '@prisma/client'
 import { Card, CardFooter, Image } from '@nextui-org/react'
 import Link from 'next/link'
 import { calculateAge } from '@/lib/util'
+import LikeButton from '@/components/LikeButton'
 
 type MemberCardProps = {
   member: Member
@@ -20,6 +21,9 @@ export const MemberCard = ({ member }: MemberCardProps) => {
         src={member.image || '/images/user.png'}
         className="aspect-square object-cover"
       />
+      <div className="absolute top-3 right-3 z-50">
+        <LikeButton targetId={member.userId} hasLiked={true} />
+      </div>
       <CardFooter className="flex justify-start bg-black bg-dark-gradient overflow-hidden absolute bottom-0 z-10">
         <div className="flex flex-col text-white">
           <span className="font-semibold">

@@ -4,7 +4,7 @@
 'use server'
 
 import bcrypt from 'bcryptjs'
-import { signIn, signOut } from '@/auth'
+import { auth, signIn, signOut } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
 import { User } from '@prisma/client'
@@ -113,4 +113,13 @@ export const getUserById = async (id: string) => {
   return prisma.user.findUnique({
     where: { id: id },
   })
+}
+
+export const getAuthUserId = async () => {
+  const session = await auth()
+  const userId = session?.user?.id
+
+  if (!userId) throw new Error('Unauthorized')
+
+  return userId
 }

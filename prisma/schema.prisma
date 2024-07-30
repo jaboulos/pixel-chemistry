@@ -63,6 +63,9 @@ model Member {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   // 1 to many relationship, 1 member can have many photos
   photos      Photo[] // One-to-many relation with Photo model
+
+  sourceLikes Like[] @relation("source")
+  targetLikes Like[] @relation("target")
 }
 
 model Photo {
@@ -75,4 +78,14 @@ model Photo {
   // references id of Member table
   // onDelete cascade, if User is deleted, it will also delete the  Member, which will then delete related Photos of that member
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  sourceUserId String
+  sourceMember Member @relation("source", fields: [sourceUserId], references: [userId], onDelete: Cascade)
+
+  targetUserId String
+  targetMember Member @relation("target", fields: [targetUserId], references: [userId], onDelete: Cascade)
+
+  @@id([sourceUserId, targetUserId])
 }
