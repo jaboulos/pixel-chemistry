@@ -1,70 +1,61 @@
 'use server'
 
-import { auth } from '@/auth'
-
 import { prisma } from '@/lib/prisma'
-
 import { getAuthUserId } from './authActions'
 
-// Toggles the 'like' status between the authenticated user and another user.
 export const toggleLikeMember = async (
-  targetUserId: string, // ID of the user being liked or unliked.
-  isLiked: boolean, // Boolean flag indicating whether the user is liked (true) or unliked (false).
+  targetUserId: string,
+  isLiked: boolean,
 ) => {
+  // Defines an async function to toggle the "like" status of a member.
   try {
-    // Fetch the authenticated user's ID.
-    const userId = await getAuthUserId()
+    const userId = await getAuthUserId() // Fetches the authenticated user ID.
 
-    if (!isLiked) {
-      // If the user is unliked, delete the corresponding row in the 'like' table where the authenticated user liked the target user.
+    if (isLiked) {
+      // Checks if the user has already liked the target member.
       await prisma.like.delete({
+        // Deletes the like record if it exists.
         where: {
           sourceUserId_targetUserId: {
-            sourceUserId: userId, // The authenticated user's ID.
-            targetUserId, // The ID of the user being unliked.
+            sourceUserId: userId, // Source user ID is the authenticated user.
+            targetUserId, // Target user ID is the member to be unliked.
           },
         },
       })
     } else {
-      // If the user is liked, create a new row in the 'like' table indicating that the authenticated user likes the target user.
+      // If the user has not liked the target member yet.
       await prisma.like.create({
+        // Creates a new like record.
         data: {
-          sourceUserId: userId, // The authenticated user's ID.
-          targetUserId, // The ID of the user being liked.
+          sourceUserId: userId, // Source user ID is the authenticated user.
+          targetUserId, // Target user ID is the member to be liked.
         },
       })
     }
   } catch (error) {
-    // Log any errors to the console.
-    console.log(error)
-    // Rethrow the error to be handled by the caller.
-    throw error
+    console.log(error) // Logs any error that occurs.
+    throw error // Throws the error to be handled by the caller.
   }
 }
 
-// Fetches the IDs of all users liked by the authenticated user.
 export const fetchCurrentUserLikeIds = async () => {
+  // Defines an async function to fetch IDs of members liked by the current user.
   try {
-    // Fetch the authenticated user's ID.
-    const userId = await getAuthUserId()
+    const userId = await getAuthUserId() // Fetches the authenticated user ID.
 
-    // Query the 'like' table for rows where the authenticated user is the source user.
     const likeIds = await prisma.like.findMany({
+      // Finds all like records where the source user ID matches the authenticated user.
       where: {
         sourceUserId: userId,
       },
-      // Select only the 'targetUserId' field from the result.
       select: {
-        targetUserId: true,
+        targetUserId: true, // Selects only the target user IDs.
       },
     })
 
-    // Return an array of 'targetUserId's, i.e., the IDs of users liked by the authenticated user.
-    return likeIds.map((like) => like.targetUserId)
+    return likeIds.map((like) => like.targetUserId) // Maps the result to an array of target user IDs.
   } catch (error) {
-    // Log any errors to the console.
-    console.log(error)
-    // Rethrow the error to be handled by the caller.
-    throw error
+    console.log(error) // Logs any error that occurs.
+    throw error // Throws the error to be handled by the caller.
   }
 }
