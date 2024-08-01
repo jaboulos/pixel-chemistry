@@ -59,3 +59,64 @@ export const fetchCurrentUserLikeIds = async () => {
     throw error // Throws the error to be handled by the caller.
   }
 }
+
+// fetch current users the user has liked, current user is the source
+export const fetchLikedMembers = async (type = 'source') => {
+  try {
+    const userId = await getAuthUserId()
+
+    switch (type) {
+      case 'source':
+        return await fetchSourceLikes(userId)
+      case 'target':
+        return await fetchTargetLikes(userId)
+      case 'mutual':
+        return await fetchMutualLikes(userId)
+      default:
+        return []
+    }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+// sourceUserId is our current id
+const fetchSourceLikes = async (userId: string) => {
+  const sourceList = await prisma.like.findMany({
+    where: { sourceUserId: userId },
+    // get the target member, join to member tabele to get the full member back from this
+    select: { targetMember: true },
+  })
+  // returns target member without current user info with it
+  // it is just the other user member properties
+  return sourceList.map((x) => x.targetMember)
+}
+
+const fetchTargetLikes = async (userId: string) => {
+  const targetList = await prisma.like.findMany({
+    where: { targetUserId: userId },
+    select: { sourceMember: true },
+  })
+  return targetList.map((x) => x.sourceMember)
+}
+
+// 1 get list of members source user has liked
+// 2 find out if any of those user ids are inside the target members as well
+// will give a list of the mutual likes between two users
+const fetchMutualLikes = async (userId: string) => {
+  const likedUsers = await prisma.like.findMany({
+    where: { sourceUserId: userId },
+    select: { targetUserId: true },
+  })
+  // returns an array of strings
+  const likedIds = likedUsers.map((x) => x.targetUserId)
+  const mutualList = await prisma.like.findMany({
+    where: {
+      AND: [{ targetUserId: userId }, { sourceUserId: { in: likedIds } }],
+    },
+    // sourceMember is not the current user, its the "OTHER" user
+    select: { sourceMember: true },
+  })
+  return mutualList.map((x) => x.sourceMember)
+}
