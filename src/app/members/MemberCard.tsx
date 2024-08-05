@@ -35,7 +35,7 @@ export const MemberCard = ({ member, likeIds }: MemberCardProps) => {
           <LikeButton targetId={member.userId} hasLiked={hasLiked} />
         </div>
       </div>
-      <CardFooter className="flex justify-start bg-black bg-dark-gradient overflow-hidden absolute bottom-0 z-10">
+      <CardFooter className="flex justify-start bg-dark-gradient overflow-hidden absolute bottom-0 z-10">
         <div className="flex flex-col text-white">
           <span className="font-semibold">
             {member?.name}, {memberAge}
