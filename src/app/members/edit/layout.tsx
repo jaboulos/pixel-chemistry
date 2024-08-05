@@ -3,26 +3,22 @@ import { notFound } from 'next/navigation'
 import React, { ReactNode } from 'react'
 import MemberSidebar from '../MemberSidebar'
 import { Card } from '@nextui-org/react'
+import { getAuthUserId } from '@/app/actions/authActions'
 
-export const Layout = async ({
-  children,
-  params,
-}: {
-  children: ReactNode
-  params: { userId: string }
-}) => {
+export const Layout = async ({ children }: { children: ReactNode }) => {
+  const userId = await getAuthUserId()
   // optimization issue, calls in layout and page are duplicated.  According to next docs, this is normal
-  const member = await getMemberByUserId(params.userId)
+  const member = await getMemberByUserId(userId)
 
   if (!member) {
     return notFound()
   }
 
-  const basePath = `/members/${member.userId}`
+  const basePath = `/members/edit`
+
   const navLinks = [
-    { name: 'Profile', href: `${basePath}` },
-    { name: 'Photos', href: `${basePath}/photos` },
-    { name: 'Chat', href: `${basePath}/chat` },
+    { name: 'Edit Profile', href: `${basePath}` },
+    { name: 'Update Photos', href: `${basePath}/photos` },
   ]
 
   return (
