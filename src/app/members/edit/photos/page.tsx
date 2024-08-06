@@ -1,5 +1,7 @@
 import { getAuthUserId, getUserById } from '@/app/actions/authActions'
 import { getMemberPhotosByUserId } from '@/app/actions/memberActions'
+import DeleteButton from '@/components/DeleteButton'
+import StarButton from '@/components/StarButton'
 import { CardHeader, Divider, CardBody, Image } from '@nextui-org/react'
 import { notFound } from 'next/navigation'
 import React from 'react'
@@ -29,6 +31,12 @@ export const PhotosPage = async () => {
                   src={photo.url}
                   alt="member image"
                 />
+                <div className="absolute top-3 left-3 z-50">
+                  <StarButton selected={false} loading={false} />
+                </div>
+                <div className="absolute top-3 right-3 z-50">
+                  <DeleteButton loading={false} />
+                </div>
               </div>
             ))}
         </div>
