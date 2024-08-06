@@ -6,6 +6,7 @@ import { GiPadlock } from 'react-icons/gi'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema'
 import { registerUser } from '@/app/actions/authActions'
+import { handleFormServerErrors } from '@/lib/util'
 
 export const RegisterForm = () => {
   // hook from react-hook-form
@@ -30,17 +31,7 @@ export const RegisterForm = () => {
     if (result.status === 'success') {
       console.log('User registered successfully')
     } else {
-      // check if error is array of errors (Zod error array)
-      if (Array.isArray(result.error)) {
-        result.error.forEach((e, i) => {
-          // get field name (if its name, email or pw from the form)
-          const fieldName = e.path.join('.') as 'email' | 'name' | 'password'
-          setError(fieldName, { message: e.message })
-        })
-      } else {
-        // for server errors, can be stored here
-        setError('root.serverError', { message: result.error })
-      }
+      handleFormServerErrors(result, setError)
     }
   }
 
