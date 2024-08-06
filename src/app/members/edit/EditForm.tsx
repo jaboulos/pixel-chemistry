@@ -1,23 +1,29 @@
 'use client'
+import { updateMemberProfile } from '@/app/actions/userActions'
 import {
   memberEditSchema,
   MemberEditSchemaType,
 } from '@/lib/schemas/memberEditSchema'
+import { handleFormServerErrors } from '@/lib/util'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, Textarea } from '@nextui-org/react'
 import { Member } from '@prisma/client'
+import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 type EditFormProps = {
   member: Member
 }
 
 export const EditForm = ({ member }: EditFormProps) => {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { isValid, isDirty, isSubmitting, errors },
   } = useForm<MemberEditSchemaType>({
     resolver: zodResolver(memberEditSchema),
@@ -35,8 +41,17 @@ export const EditForm = ({ member }: EditFormProps) => {
     }
   }, [member, reset])
 
-  const onSubmit = (data: MemberEditSchemaType) => {
+  const onSubmit = async (data: MemberEditSchemaType) => {
     console.log(data)
+    const result = await updateMemberProfile(data)
+    if (result.status === 'success') {
+      toast.success('profile updated')
+      router.refresh()
+      // reset form after submission
+      reset({ ...data })
+    } else {
+      handleFormServerErrors(result, setError)
+    }
   }
 
   return (
@@ -76,6 +91,9 @@ export const EditForm = ({ member }: EditFormProps) => {
           errorMessage={errors.country?.message}
         />
       </div>
+      {errors?.root?.serverError && (
+        <p className="text-danger text-sm">{errors.root.serverError.message}</p>
+      )}
       <Button
         type="submit"
         className="flex self-end"
