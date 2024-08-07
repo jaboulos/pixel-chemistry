@@ -63,7 +63,6 @@ export const RegisterForm = () => {
                 errorMessage={errors.name?.message}
               />
               <Input
-                // {...register('email', { required: true })} // this syntax for no error message and only highlight
                 {...register('email')}
                 defaultValue=""
                 label="Email"
@@ -72,7 +71,6 @@ export const RegisterForm = () => {
                 errorMessage={errors.email?.message}
               />
               <Input
-                // {...register('password', { required: true })} // this syntax for no error message and only highlight
                 {...register('password')}
                 defaultValue=""
                 label="Password"
