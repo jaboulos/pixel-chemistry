@@ -61,3 +61,28 @@ export const updateMemberProfile = async (
     return { status: 'error', error: 'Something went wrong' }
   }
 }
+
+// call function after image has been uploaded to cloudinary
+export const addImage = async (url: string, publicId: string) => {
+  try {
+    const userId = await getAuthUserId()
+
+    // adds image to db
+    return prisma.member.update({
+      where: { userId },
+      data: {
+        photos: {
+          create: [
+            {
+              url,
+              publicId,
+            },
+          ],
+        },
+      },
+    })
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}

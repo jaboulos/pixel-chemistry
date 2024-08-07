@@ -1,13 +1,19 @@
 'use client'
-import { CldUploadButton } from 'next-cloudinary'
+import { CldUploadButton, CloudinaryUploadWidgetResults } from 'next-cloudinary'
 import React from 'react'
 import { HiPhoto } from 'react-icons/hi2'
 
-export const ImageUploadButton = () => {
+type ImageUploadButtonProps = {
+  onUploadImage: (result: CloudinaryUploadWidgetResults) => void
+}
+
+export const ImageUploadButton = ({
+  onUploadImage,
+}: ImageUploadButtonProps) => {
   return (
     <CldUploadButton
       options={{ maxFiles: 1 }}
-      onSuccess={(res) => console.log('res', res)}
+      onSuccess={onUploadImage}
       signatureEndpoint="/api/sign-image"
       uploadPreset="app-default"
       className="flex items-center gap-2 bg-secondary-50 text-white rounded-lg py-2 px-4 hover:bg-secondary/70"
