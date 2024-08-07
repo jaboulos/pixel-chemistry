@@ -17,13 +17,13 @@ export const PhotosPage = async ({
       <CardBody>
         <div className="grid grid-cols-5 gap-3">
           {photos &&
-            photos.map((p) => (
-              <div key={p.id}>
+            photos.map((photo) => (
+              <div key={photo.id}>
                 <Image
                   width={300}
                   height={300}
                   className="object-cover aspect-square"
-                  src={p.url}
+                  src={photo.url}
                   alt="member image"
                 />
               </div>

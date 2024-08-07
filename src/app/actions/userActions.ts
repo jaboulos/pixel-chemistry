@@ -7,7 +7,7 @@ import {
 import { ActionResult } from '@/types'
 import { getAuthUserId } from './authActions'
 import { prisma } from '@/lib/prisma'
-import { Member } from '@prisma/client'
+import { Member, Photo } from '@prisma/client'
 
 /**
  * Updates the profile of a member.
@@ -80,6 +80,27 @@ export const addImage = async (url: string, publicId: string) => {
           ],
         },
       },
+    })
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const setMainImage = async (photo: Photo) => {
+  try {
+    const userId = await getAuthUserId()
+
+    // update image in cookie
+    await prisma.user.update({
+      where: { id: userId },
+      data: { image: photo.url },
+    })
+
+    // update image that is displayed
+    return prisma.member.update({
+      where: { userId },
+      data: { image: photo.url },
     })
   } catch (error) {
     console.log(error)
