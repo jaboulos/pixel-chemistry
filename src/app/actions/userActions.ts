@@ -8,6 +8,7 @@ import { ActionResult } from '@/types'
 import { getAuthUserId } from './authActions'
 import { prisma } from '@/lib/prisma'
 import { Member, Photo } from '@prisma/client'
+import { cloudinary } from '@/lib/cloudinary'
 
 /**
  * Updates the profile of a member.
@@ -101,6 +102,32 @@ export const setMainImage = async (photo: Photo) => {
     return prisma.member.update({
       where: { userId },
       data: { image: photo.url },
+    })
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+// deletes image from cloudinary and db
+export const deleteImage = async (photo: Photo) => {
+  try {
+    const userId = await getAuthUserId()
+    if (photo.publicId) {
+      // remove from cloudinary if image has public id
+      await cloudinary.v2.uploader.destroy(photo.publicId)
+    }
+
+    // delete image from db
+    return prisma.member.update({
+      where: { userId },
+      // data we will delete is inside photos
+      data: {
+        photos: {
+          // pass in the id of the photo to delete
+          delete: { id: photo.id },
+        },
+      },
     })
   } catch (error) {
     console.log(error)

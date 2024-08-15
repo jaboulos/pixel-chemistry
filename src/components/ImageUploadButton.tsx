@@ -16,7 +16,7 @@ export const ImageUploadButton = ({
       onSuccess={onUploadImage}
       signatureEndpoint="/api/sign-image"
       uploadPreset="app-default"
-      className="flex items-center gap-2 bg-secondary-50 text-white rounded-lg py-2 px-4 hover:bg-secondary/70"
+      className={`flex items-center gap-2 border-2 border-secondary text-secondary rounded-lg py-2 px-4 hover:bg-secondary/10`}
     >
       <HiPhoto size={28} />
       Upload new image

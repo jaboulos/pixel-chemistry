@@ -5,11 +5,16 @@ import { GiMatchTip } from 'react-icons/gi'
 import NavLink from './NavLink'
 import { auth } from '@/auth'
 import UserMenu from './UserMenu'
+import { getAuthUserId } from '@/app/actions/authActions'
+import { getMemberByUserId } from '@/app/actions/memberActions'
 
 export const TopNav = async () => {
   // extract session from promise
   // will be used to determine whether or not to show user menu or buttons
   const session = await auth()
+  const userId = await getAuthUserId()
+  // optimization issue, calls in layout and page are duplicated.  According to next docs, this is normal
+  const member = await getMemberByUserId(userId)
 
   return (
     <Navbar
@@ -38,7 +43,7 @@ export const TopNav = async () => {
       </NavbarContent>
       <NavbarContent justify="end">
         {session?.user ? (
-          <UserMenu user={session.user} />
+          <UserMenu user={session.user} member={member} />
         ) : (
           <>
             <Button

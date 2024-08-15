@@ -22,9 +22,10 @@ import React from 'react'
 
 type UserMenuProps = {
   user: Session['user']
+  member: any
 }
 
-export const UserMenu = ({ user }: UserMenuProps) => {
+export const UserMenu = ({ user, member }: UserMenuProps) => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
@@ -33,9 +34,9 @@ export const UserMenu = ({ user }: UserMenuProps) => {
           as="button"
           className="transition-transform"
           color="secondary"
-          name={user?.name || 'user avatar'}
+          name={member?.name || 'user avatar'}
           size="sm"
-          src={user?.image || '/images/user.png'}
+          src={member?.image || '/images/user.png'}
         />
       </DropdownTrigger>
       <DropdownMenu variant="flat" aria-label="User actions menu">
@@ -46,7 +47,7 @@ export const UserMenu = ({ user }: UserMenuProps) => {
             className="h-14 flex flex-row"
             aria-label="username"
           >
-            Signed in as {user?.name}
+            Signed in as {member?.name}
           </DropdownItem>
         </DropdownSection>
         <DropdownItem as={Link} href="/members/edit">
