@@ -160,10 +160,10 @@ import { getAuthUserId } from './authActions'
 import { prisma } from '@/lib/prisma'
 import { cloudinary } from '@/lib/cloudinary'
 
-export async function updateMemberProfile(
+export const updateMemberProfile = async (
   data: MemberEditSchema,
   nameUpdated: boolean,
-): Promise<ActionResult<Member>> {
+): Promise<ActionResult<Member>> => {
   try {
     const userId = await getAuthUserId()
 
@@ -198,7 +198,7 @@ export async function updateMemberProfile(
   }
 }
 
-export async function addImage(url: string, publicId: string) {
+export const addImage = async (url: string, publicId: string) => {
   try {
     const userId = await getAuthUserId()
 
@@ -221,7 +221,7 @@ export async function addImage(url: string, publicId: string) {
   }
 }
 
-export async function setMainImage(photo: Photo) {
+export const setMainImage = async (photo: Photo) => {
   try {
     const userId = await getAuthUserId()
 
@@ -240,7 +240,7 @@ export async function setMainImage(photo: Photo) {
   }
 }
 
-export async function deleteImage(photo: Photo) {
+export const deleteImage = async (photo: Photo) => {
   try {
     const userId = await getAuthUserId()
 
@@ -262,7 +262,7 @@ export async function deleteImage(photo: Photo) {
   }
 }
 
-export async function getUserInfoForNav() {
+export const getUserInfoForNav = async () => {
   try {
     const userId = await getAuthUserId()
     return prisma.user.findUnique({

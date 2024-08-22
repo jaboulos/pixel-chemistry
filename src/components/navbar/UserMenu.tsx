@@ -78,11 +78,11 @@ import {
 import Link from 'next/link'
 import React from 'react'
 
-type Props = {
+type UserMenuProps = {
   userInfo: { name: string | null; image: string | null } | null
 }
 
-export default function UserMenu({ userInfo }: Props) {
+export const UserMenu = ({ userInfo }: UserMenuProps) => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
@@ -117,3 +117,5 @@ export default function UserMenu({ userInfo }: Props) {
     </Dropdown>
   )
 }
+
+export default UserMenu
