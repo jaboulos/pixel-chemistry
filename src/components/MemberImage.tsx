@@ -20,6 +20,8 @@ export const MemberImage = ({ photo }: MemberImageProps) => {
           crop="fill"
           gravity="faces"
           className="rounded-2xl"
+          // removes console error
+          priority
         />
       ) : (
         <Image
