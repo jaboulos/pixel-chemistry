@@ -1,8 +1,8 @@
 'use client'
 import { updateMemberProfile } from '@/app/actions/userActions'
 import {
+  MemberEditSchema,
   memberEditSchema,
-  MemberEditSchemaType,
 } from '@/lib/schemas/memberEditSchema'
 import { handleFormServerErrors } from '@/lib/util'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,7 +17,7 @@ type EditFormProps = {
   member: Member
 }
 
-export const EditForm = ({ member }: EditFormProps) => {
+export default function EditForm({ member }: EditFormProps) {
   const router = useRouter()
   const {
     register,
@@ -25,7 +25,7 @@ export const EditForm = ({ member }: EditFormProps) => {
     reset,
     setError,
     formState: { isValid, isDirty, isSubmitting, errors },
-  } = useForm<MemberEditSchemaType>({
+  } = useForm<MemberEditSchema>({
     resolver: zodResolver(memberEditSchema),
     mode: 'onTouched',
   })
@@ -41,13 +41,13 @@ export const EditForm = ({ member }: EditFormProps) => {
     }
   }, [member, reset])
 
-  const onSubmit = async (data: MemberEditSchemaType) => {
-    console.log(data)
-    const result = await updateMemberProfile(data)
+  const onSubmit = async (data: MemberEditSchema) => {
+    const nameUpdated = data?.name !== member.name
+    const result = await updateMemberProfile(data, nameUpdated)
+
     if (result.status === 'success') {
-      toast.success('profile updated')
+      toast.success('Profile updated')
       router.refresh()
-      // reset form after submission
       reset({ ...data })
     } else {
       handleFormServerErrors(result, setError)
@@ -107,5 +107,3 @@ export const EditForm = ({ member }: EditFormProps) => {
     </form>
   )
 }
-
-export default EditForm
