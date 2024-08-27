@@ -64,8 +64,10 @@ model Member {
   // 1 to many relationship, 1 member can have many photos
   photos      Photo[] // One-to-many relation with Photo model
 
-  sourceLikes Like[] @relation("source")
-  targetLikes Like[] @relation("target")
+  sourceLikes       Like[]    @relation("source")
+  targetLikes       Like[]    @relation("target")
+  senderMessages    Message[] @relation("sender")
+  recipientMessages Message[] @relation("recipient")
 }
 
 model Photo {
@@ -88,4 +90,20 @@ model Like {
   targetMember Member @relation("target", fields: [targetUserId], references: [userId], onDelete: Cascade)
 
   @@id([sourceUserId, targetUserId])
+}
+
+// many to many
+// 1 member can send many messages
+// 1 member can receive many messages
+model Message {
+  id               String    @id @default(cuid())
+  text             String
+  created          DateTime  @default(now())
+  senderId         String?
+  recipientId      String?
+  sender           Member?   @relation("sender", fields: [senderId], references: [userId], onDelete: SetNull)
+  recipient        Member?   @relation("recipient", fields: [recipientId], references: [userId], onDelete: SetNull)
+  dateRead         DateTime?
+  senderDeleted    Boolean   @default(false)
+  recipientDeleted Boolean   @default(false)
 }
