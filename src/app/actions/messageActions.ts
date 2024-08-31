@@ -12,6 +12,7 @@ export const createMessage = async (
 ): Promise<ActionResult<Message>> => {
   try {
     // get id of current logged in user
+    // userId unused, temporary
     const userId = await getAuthUserId()
     const validated = messageSchema.safeParse(data)
 
