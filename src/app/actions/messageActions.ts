@@ -25,6 +25,7 @@ export const createMessage = async (
       data: {
         text,
         recipientId: recipientUserId,
+        senderId: userId,
       },
     })
 
@@ -32,5 +33,55 @@ export const createMessage = async (
   } catch (error) {
     console.log(error)
     return { status: 'error', error: 'Something went wrong' }
+  }
+}
+
+// get both sides of the conversation between two users
+// long query to get message information we need
+export const getMessageThread = async (recipientId: string) => {
+  try {
+    const userId = await getAuthUserId()
+
+    return prisma.message.findMany({
+      where: {
+        OR: [
+          {
+            senderId: userId,
+            recipientId,
+          },
+          {
+            senderId: recipientId,
+            recipientId: userId,
+          },
+        ],
+      },
+      // sorting
+      orderBy: {
+        created: 'asc',
+      },
+      select: {
+        id: true,
+        text: true,
+        created: true,
+        dateRead: true,
+        sender: {
+          select: {
+            userId: true,
+            name: true,
+            image: true,
+          },
+        },
+        recipient: {
+          select: {
+            userId: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    console.log(error)
+    throw error
   }
 }
