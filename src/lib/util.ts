@@ -1,10 +1,14 @@
-import { differenceInYears } from 'date-fns'
+import { differenceInYears, format } from 'date-fns'
 import { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 import { ZodIssue } from 'zod'
 
 // Function to calculate age based on date of birth
 export const calculateAge = (dob: Date) => {
   return differenceInYears(new Date(), dob)
+}
+
+export const formatShortDateTime = (date: Date) => {
+  return format(date, 'dd MMMM yy h:mm:a')
 }
 
 /**
