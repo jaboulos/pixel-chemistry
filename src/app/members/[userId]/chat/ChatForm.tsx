@@ -5,7 +5,7 @@ import { handleFormServerErrors } from '@/lib/util'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input } from '@nextui-org/react'
 import { useParams, useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { HiPaperAirplane } from 'react-icons/hi2'
 
@@ -17,10 +17,16 @@ export const ChatForm = () => {
     handleSubmit,
     reset,
     setError,
+    setFocus, // set focus when component first loads
     formState: { isSubmitting, isValid, errors },
   } = useForm<MessageSchema>({
     resolver: zodResolver(messageSchema),
   })
+
+  useEffect(() => {
+    // when the app loads set focus on specific field
+    setFocus('text')
+  }, [setFocus])
 
   const onSubmit = async (data: MessageSchema) => {
     const result = await createMessage(params.userId, data)
@@ -29,6 +35,9 @@ export const ChatForm = () => {
     } else {
       reset()
       router.refresh()
+      // after submitting a message, refocus the cursor into the input
+      // since these are not async, need to add a delay for setFocus call
+      setTimeout(() => setFocus('text'), 50)
     }
   }
 

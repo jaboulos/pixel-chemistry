@@ -52,6 +52,6 @@ https://console.neon.tech/app/projects
 Dummy user credentials for testing
 
 ```bash
-UN: Mayo@test.com
+UN: Mayo@test.com, margo@test.com, lisa@test.com, davis@test.com
 PW: password
 ```
