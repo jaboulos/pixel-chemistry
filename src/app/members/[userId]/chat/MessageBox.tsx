@@ -1,8 +1,10 @@
+'use client'
+
 import { transformImageUrl } from '@/lib/util'
 import { MessageDto } from '@/types'
 import { Avatar } from '@nextui-org/react'
 import clsx from 'clsx'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 type MessageBoxProps = {
   message: MessageDto
@@ -11,6 +13,13 @@ type MessageBoxProps = {
 
 export const MessageBox = ({ message, currentUserId }: MessageBoxProps) => {
   const isCurrentUserSender = message.senderId === currentUserId
+  const messageEndRef = useRef<HTMLDivElement>(null)
+
+  // when sending a message, scroll down to the bottom of the message box so the user does not have to do it themselves.
+  useEffect(() => {
+    if (messageEndRef.current)
+      messageEndRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [messageEndRef])
 
   const renderAvatar = () => (
     <Avatar
@@ -69,6 +78,7 @@ export const MessageBox = ({ message, currentUserId }: MessageBoxProps) => {
         {renderMessageContent()}
         {isCurrentUserSender && renderAvatar()}
       </div>
+      <div ref={messageEndRef} />
     </div>
   )
 }
